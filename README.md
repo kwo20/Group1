@@ -1,11 +1,11 @@
 # Group1
 Group Info:
 
-Keith Olszewski (Leader/Collaborator)
+Keith Olszewski (GH: kwo20) (Leader/Collaborator)
 
-Harish Balamurugan (Collaborator)
+Harish Balamurugan (GH: hb1078) (Collaborator)
 
-Leif Orth (Collaborator)
+Leif Orth (GH: DigiLeaf) (Collaborator)
 
-Darcie Dalafave (Collaborator)
+Darcie Dalafave (GH: darcie76) (Collaborator)
 
