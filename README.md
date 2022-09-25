@@ -9,3 +9,6 @@ Leif Orth (GH: DigiLeaf) (Collaborator)
 
 Darcie Dalafave (GH: darcie76) (Collaborator)
 
+Language: Python
+
+Framework: Flask
