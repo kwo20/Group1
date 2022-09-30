@@ -1,17 +1,15 @@
 html{
     font-family: Lato;
-    background-color: #bab9d5c5;
+    background-color: #64877e;
 }
 
 .title {
     font-size: 50px;
-    
     text-align: center;
 }
 
 h1{
     font-size: 50px;
-    
     text-align: center;
 }
 
@@ -44,8 +42,7 @@ h1{
   }
 
 .loginbutton:hover {
-  background-color: #4bd14f; /* Green */
-  color: white;
+  background-color: #18343c;
 }
 
 .generaltext{
