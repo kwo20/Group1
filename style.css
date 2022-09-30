@@ -1,0 +1,54 @@
+html{
+    font-family: Lato;
+    background-color: #bab9d5c5;
+}
+
+.title {
+    font-size: 50px;
+
+    text-align: center;
+}
+
+h1{
+    font-size: 50px;
+
+    text-align: center;
+}
+
+.usernameentry{
+    font-size: 20px;
+    text-align: center;
+
+}
+.usernameentry:focus{
+    outline: 2px solid orange;
+}
+
+.passwordentry{
+    font-size: 20px;
+    text-align: center;
+}
+
+.loginbutton {
+    background-color: #bab9d5c5;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition-duration: 0.4s;
+  }
+
+.loginbutton:hover {
+  background-color: #4bd14f; /* Green */
+  color: white;
+}
+
+.generaltext{
+    font-size: 20px;
+    text-align: center;
+}
