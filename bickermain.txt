@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang = "en">
+	<head>
+		<link rel = "stylesheet" href = "stylehome.css"	/>
+	</head>
+	<body>
+		<h1> Your Timeline </h1>
+		
+		<form action = "/createpost" method = "post"
+			<div class = "postbutton"> <input type = "submit" value =  "Post"/></div>
+		        <div class = "logout"> <input type = "submit" value =  "Logout"/></div>
+                </form>
+		
+	</body>
+</html>
