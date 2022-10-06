@@ -1,15 +1,38 @@
 <!DOCTYPE html>
-<html lang = "en">
-	<head>
-		<link rel = "stylesheet" href = "stylehome.css"	/>
-	</head>
-	<body>
-		<h1> Your Timeline </h1>
-		
-		<form action = "/createpost" method = "post"
-			<div class = "postbutton"> <input type = "submit" value =  "Post"/></div>
-		        <div class = "logout"> <input type = "submit" value =  "Logout"/></div>
-                </form>
-		
-	</body>
+<html>
+<head>
+<meta charset = "utf-8">
+<meta http-equiv="X-UA-Compatible" content = "IE=edge">
+<meta name = "viewport" content = "width=device-width, initial-scale = 1">
+<meta name = "description" content = "">
+<meta name = "author" content = "">
+
+
+<title> Your Timeline </title>
+<link rel = "stylesheet" href="stylehome.css"/>
+<link rel = "stylesheet" href ='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+</head>
+<body>
+
+        <header>
+                <div class = "site-content">
+                    <nav>
+                        <a class = "brand"> Bicker </a>
+                        <a class = "nav-item" href = "/homepage.html"> <button> Home </button> </a>
+                        <a class = "nav-item" href = "/friendlist.html"> <button> Friends </button> </a>
+                        <a class = "nav-item" href = "/userpage.html"> <button> My Page </button> </a>
+                    </nav>
+                    <div class = "container">
+
+                        <div class = "content">
+                            <h2>Timeline</h2>
+
+                        </div>
+                    </div>
+                    <div class = "clicks">
+                        <a class = "post" href = "/homepage.html"><button> Post </button> </a>
+                    </div>
+                </div>
+        </header>
+</body>
 </html>
