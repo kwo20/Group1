@@ -4,26 +4,29 @@
   <meta charset="UTF-8">
   <title>Bicker</title>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-  <link rel="stylesheet" href="./style.css">
-
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
 </head>
 <body>
 
 <div class="login-form">
-  <form>
+  <form action="" method="post">
     <h1>Welcome to Bicker!</h1>
     <div class="content">
       <div class="input-field">
-        <input type="username" name = "username" placeholder="Username">
+        <input type="text" placeholder="Username" name="username" value="{{
+          request.form.username }}">
       </div>
       <div class="input-field">
-        <input type="password" name = "password" placeholder="Password">
-
+        <input type="password" placeholder="Password" name="password" value="{{
+          request.form.password }}">
+      </div>
+      <input class="btn btn-default" type="submit" value="Login">
+    </form>
     <div class="action">
-      <a href = "/createaccount.html"><button>Create Account</button></a>
-      <a href = "/mainpage.html"><button>Sign in</button></a>
+      <a href = "{{ url_for('create') }}">Create Account</a>
+    
     </div>
-  </form>
+  
 </div>
 
 

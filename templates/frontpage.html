@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bicker</title>
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-    <link rel = "stylesheet" href = "stylefront.css">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylefront.css') }}">
 </head>
 <body>
     
     <nav>
         <div class = "nav-left">
-            <img src="bickerlogo.png" alt="Bicker Logo" class = "logo">
+            <img src="{{ url_for('static', filename='bickerlogo.png') }}" alt="Bicker Logo" class = "logo">
             <ul>
-                <li><a href = "frontpage.html">Home</a></li>
+                <!--<li><a href = "templates/frontpage.html">Home</a></li>-->
             </ul>
         </div>
 
@@ -22,7 +22,7 @@
         </div>
         <div class = "nav-right"> 
             <div class = "search-box">
-                <img src = "searchicon.png" alt = "search icon">
+                <img src = "{{ url_for('static', filename='searchicon.png') }}" alt = "search icon">
                 <input type = "text" placeholder = "Search">
             </div>
 
@@ -36,7 +36,7 @@
         <div class="left-sidebar">
             <div class="important-links">
                 <!--IGNORE THIS LINE UNTIL WE DEAL WITH FRIENDS FEATURE-->
-                <a href="#"><img src = "friendsicon.png" alt = "friends icon">Friends</a>
+                <a href="#"><img src = "{{ url_for('static', filename='friendsicon.png') }}" alt = "friends icon">Friends</a>
             </div>
         </div>
 
@@ -44,38 +44,39 @@
         <div class="main-content">
             <div class="write-post-container">
                 <div>
-                    <p>Placeholder User</p>
+                    <p> {{ user }} </p>
                 </div>
             </div>
 
             <div class="post-input-container">
-                <textarea name = "post-input" id = "post-input" placeholder = "What's on your mind?" rows = 3></textarea>
-
-            
+                <form action="{{ url_for('post') }}" method="post">
+                    <textarea name = "post-input" id = "post-input" placeholder = "What's on your mind?" rows = 3></textarea>
+                    <input type="submit">
+                </form>
             </div>
-
-            <!--duplicating this post container will create multiple posts-->
+            {% for row in postlist %}
             <div class="post-container">
                 <div class="timestamp">
 
                     <!--figure out a way to get the actual time of the post-->
-                    <span>October 5, 2022, 7:53 pm</span>
+                    <span>{{ row[3] }}</span>
                 </div>
 
-                <p class = "post-text">This is example post text.</p>
+                <p class = "post-text">{{ row[1] }}</p>
 
                 <!--IGNORE THIS DIV UNTIL INTERACTING WITH POSTS IS NECESSARY-->
                 <div class="post-row">
                     <div class = "activity-icons">
-                        <div><img src = "like.png"></div>
-                        <div><img src = "comments.png"></div>
-                        <div><img src = "share.png"></div>
+                        <div><img src = "{{ url_for('static', filename='like.png') }}"></div>
+                        <div><img src = "{{ url_for('static', filename='comments.png') }}"></div>
+                        <div><img src = "{{ url_for('static', filename='share.png') }}"></div>
                     </div>
                 </div>
 
             </div>
-            
+            {% endfor %}
         </div>
+
         
 
         <!--Right Sidebar-->
