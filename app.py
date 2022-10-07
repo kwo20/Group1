@@ -66,7 +66,22 @@ def post():
         return render_template('mainpage.html')
     else:
         return render_template('mainpage.html')
-
-
+    
+@app.route('/search', methods=['GET', 'POST'])       
+def search():
+    conn = db_connection()
+    cursor = conn.cursor()
+    if request.method == 'POST':
+        new_search = request.form['username']
+        sql = """SELECT username FROM users WHERE username=?"""
+        cursor.execute(sql, (new_search,))
+        test = cursor.fetchone()
+        if not test:
+            return render_template('search.html');
+        elif test: 
+            return render_template('mainpage.html');
+    else:
+        return render_template('search.html')
+    
 if __name__ == "__main__":
     app.run(debug=True)
