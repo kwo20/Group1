@@ -21,6 +21,7 @@
                         <a class = "nav-item" href = "/homepage.html"> <button> Home </button> </a>
                         <a class = "nav-item" href = "/friendlist.html"> <button> Friends </button> </a>
                         <a class = "nav-item" href = "/userpage.html"> <button> My Page </button> </a>
+                        <a class = "nav-item" href = "/searchpage.html"><button> Search </button></a>
                     </nav>
                     <div class = "container">
 
