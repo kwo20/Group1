@@ -28,7 +28,7 @@ def create():
         
         cursor = cursor.execute(sql, (new_username, new_password))
         conn.commit()
-        return render_template('login.html')
+        return redirect("/login")
     else:
         return render_template('create.html')
 
