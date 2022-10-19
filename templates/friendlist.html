@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bicker</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+</head>
+<body>
+    {% for row in requestlist %}
+    <div class="post-container">
+        <p>Friend request from: {{ row[2] }} </p>
+        <form action="" method="post">
+            <input type ="number" style="display: none" id="acceptbutton" name="acceptbutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+            <input type="submit" value="Accept">
+            
+        </form>
+        <form action="" method="post">
+            <input type ="number" style="display: none" id="denybutton" name="denybutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+            <input type="submit" value="Deny">
+        </form>
+    </div>
+    {% endfor %}
+</body>
+</html>
