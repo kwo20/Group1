@@ -12,6 +12,9 @@
     <nav>
         <div class = "nav-left">
             <img src="{{ url_for('static', filename='bickerlogo.png') }}" alt="Bicker Logo" class = "logo">
+            <form action="" method="post">
+                <input class="btn btn-default" name="return" type="submit" value="{{ currentuser }}">
+            </form>
             <ul>
                 <!--<li><a href = "templates/frontpage.html">Home</a></li>-->
             </ul>
@@ -59,7 +62,7 @@
             </div>
 
             <div class="post-input-container">
-                <form action="{{ url_for('post') }}" method="post">
+                <form action="{{ url_for('frontpage') }}" method="post">
                     <textarea name = "post-input" id = "post-input" placeholder = "What's on your mind?" rows = 3></textarea>
                     <input type="submit">
                 </form>
@@ -78,7 +81,12 @@
                 <!--IGNORE THIS DIV UNTIL INTERACTING WITH POSTS IS NECESSARY-->
                 <div class="post-row">
                     <div class = "activity-icons">
-                        <div><img src = "{{ url_for('static', filename='like.png') }}"></div>
+                        <div><form action="" method="post">
+                            <input type ="number" style="display: none" id="likebutton" name="likebutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                            <input type="submit" value="Like">
+                            <span>{{ row[4] }}</span>
+                        </form>
+                        </div>
                         <div><img src = "{{ url_for('static', filename='comments.png') }}"></div>
                         <div>
                             <form action="" method="post">
