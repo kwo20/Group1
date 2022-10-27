@@ -41,4 +41,3 @@ def test_login_bypass():
     #password = 'test'
     #test_client.post('/login', data=dict(test_user='ecology', test_pass='test'))
     #assert response.request.path == "/frontpage"
-    
