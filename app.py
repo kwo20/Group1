@@ -192,6 +192,12 @@ def friends_list():
     #Select all friend requests from database
     sql_query = """SELECT * FROM followers WHERE followed_name=? AND status=0"""
     cursor.execute(sql_query, (current_user,))
+    friend_requests = []
+    for row in cursor.fetchall():
+                friend_requests.append(row)
+    #Select all friends from database
+    sql_query = """SELECT * FROM followers WHERE followed_name=? AND status=1"""
+    cursor.execute(sql_query, (current_user,))
     friend_list = []
     for row in cursor.fetchall():
                 friend_list.append(row)
@@ -207,7 +213,7 @@ def friends_list():
             sql_query= """DELETE FROM followers WHERE friendid=?"""
             cursor.execute(sql_query, (friend_id,))
             conn.commit()
-    return render_template('friendlist.html', requestlist = friend_list)
+    return render_template('friendlist.html', requestlist = friend_requests, friendlist=friend_list)
 
 if __name__ == "__main__":
     app.run(debug=True)
