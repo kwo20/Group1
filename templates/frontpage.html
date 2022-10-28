@@ -12,8 +12,12 @@
     <nav>
         <div class = "nav-left">
             <img src="{{ url_for('static', filename='bickerlogo.png') }}" alt="Bicker Logo" class = "logo">
+            
             <form action="" method="post">
+
+                You are logged in as: 
                 <input class="btn btn-default" name="return" type="submit" value="{{ currentuser }}">
+                (click to return to your timeline)
             </form>
             <ul>
                 <!--<li><a href = "templates/frontpage.html">Home</a></li>-->
@@ -22,17 +26,16 @@
 
         <div class = "nav-middle">
             Bicker
-            <form action="" method="post">
-                <input class="btn btn-default" name="frienduser" type="submit" value="Friend">
-            </form>
+
         </div>
         <div class = "nav-right"> 
             <div class = "search-box">
                 <img src = "{{ url_for('static', filename='searchicon.png') }}" alt = "search icon">
             <form action="" method="post">
-                <input type="text" placeholder="Search" name="searchuser" value="{{
+                <input type="text" placeholder="Search for user here" name="searchuser" value="{{
                     request.form.searchuser }}">
-                <input class="btn btn-default" type="submit" value="Search">
+
+                <input class="searchbutton" type="submit" value="Search">
             </form>
             </div>
 
@@ -46,10 +49,8 @@
         <div class="left-sidebar">
             <div class="important-links">
                 <!--IGNORE THIS LINE UNTIL WE DEAL WITH FRIENDS FEATURE-->
-                <a href="#"><img src = "{{ url_for('static', filename='friendsicon.png') }}" alt = "friends icon">Friends</a>
-                <form action="" method="post">
-                    <input class="btn btn-default" name="friendlist" type="submit" value="FriendList">
-                </form>
+                <a href="{{ url_for('friends_list') }}" style = "color: #bc7db9;"><img src = "{{ url_for('static', filename='friendsicon.png') }}" alt = "friends icon">Friends</a>
+
             </div>
         </div>
 
@@ -63,8 +64,11 @@
 
             <div class="post-input-container">
                 <form action="{{ url_for('frontpage') }}" method="post">
-                    <textarea name = "post-input" id = "post-input" placeholder = "What's on your mind?" rows = 3></textarea>
-                    <input type="submit">
+                    <textarea name = "post-input" id = "post-input" placeholder = "What's on your mind, {{ currentuser }}?" rows = 3></textarea>
+  
+                    <button type = "submit" class = "postsubmit">
+                        Post
+                    </button>
                 </form>
             </div>
             {% for row in postlist %}
@@ -87,7 +91,9 @@
                             <span>{{ row[4] }}</span>
                         </form>
                         </div>
-                        <div><img src = "{{ url_for('static', filename='comments.png') }}"></div>
+                            <div>
+                                <img src = "{{ url_for('static', filename='comments.png') }}">
+                            </div>
                         <div>
                             <form action="" method="post">
                                 <input type ="number" style="display: none" id="sharebutton" name="sharebutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
@@ -105,7 +111,11 @@
         
 
         <!--Right Sidebar-->
-        <div class="right-sidebar"></div>
+        <div class="right-sidebar">            
+            <form action="" method="post">
+                <input class="friendbutton" name="frienduser" type="submit" value="Friend {{ user }}">
+            </form>
+        </div>
     </div>
 
 </body>

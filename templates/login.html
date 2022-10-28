@@ -20,10 +20,13 @@
         <input type="password" placeholder="Password" name="password" value="{{
           request.form.password }}">
       </div>
-      <input class="btn btn-default" type="submit" value="Login">
+      <button type = "submit" class = "testloginbutton">Login</button>
     </form>
     <div class="action">
-      <a href = "{{ url_for('create_account') }}">Create Account</a>
+      
+
+
+    <a href="{{ url_for('create_account') }}"><h3 id = "create_account">Create Account</h3></a>
     
     </div>
   
