@@ -87,17 +87,18 @@
                     <div class = "activity-icons">
                         <div><form action="" method="post">
                             <input type ="number" style="display: none" id="likebutton" name="likebutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
-                            <input type="submit" value="Like">
+                            <input type="submit" value="Like" class = "likebutton">
                             <span>{{ row[4] }}</span>
                         </form>
                         </div>
+                            <!--when adding comments, make it class comments-->
                             <div>
                                 <img src = "{{ url_for('static', filename='comments.png') }}">
                             </div>
                         <div>
                             <form action="" method="post">
                                 <input type ="number" style="display: none" id="sharebutton" name="sharebutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
-                                <input type="submit" value="Share">
+                                <input type="submit" value="Share" class="sharebutton">
                             </form>
                         </div>
                         <!--<div><img src = "{{ url_for('static', filename='share.png') }}"></div>-->
