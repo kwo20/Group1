@@ -13,9 +13,6 @@ nav{
     align-items: center;
     justify-content: space-between;
     background: #245356;
-    /*
-    background: #87646d;
-    */
     padding: 5px 5%;
     position: sticky;
     top: 0;
@@ -179,9 +176,6 @@ nav{
     outline: 0;
     border-bottom: 1px solid #ccc;
     background: #3f150f;
-    /*
-    background: #87646d;
-    */
     text-align: center;
     font-size: 20px;
     resize: none;
