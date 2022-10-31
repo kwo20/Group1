@@ -5,22 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bicker</title>
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='findfriends.css') }}">
 </head>
 <body>
-    {% for row in requestlist %}
-    <div class="post-container">
-        <p>Friend request from: {{ row[2] }} </p>
-        <form action="" method="post">
-            <input type ="number" style="display: none" id="acceptbutton" name="acceptbutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
-            <input type="submit" value="Accept">
-            
-        </form>
-        <form action="" method="post">
-            <input type ="number" style="display: none" id="denybutton" name="denybutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
-            <input type="submit" value="Deny">
-        </form>
+    <body>
+
+        <body>
+            <div class="find-friends-container">
+                <div class = "find-friends-header">
+                    <div class="heading">Find Friends</div>
+                    
+<!-- might need search through friend list functionality later-->
+<!--                   <div class="search">
+                        <img src="{{ url_for('static', filename='searchicon.png') }}" alt="search">
+                        <input type="text" placeholder="Enter a friend's name">
+              </div>    
+            -->
+                </div>
+                <div class = "find-friends-body">
+                        <div class="user-row">
+                            <li>
+                                {% for row in requestlist %}
+                                <div class="friend-container">
+                                    <p>{{ row[2] }} </p>
+                                </div>
+                                {% endfor %}
+                            </li>
+                        </div>  
+                    </div>
+                
+                </div>
+    
+            </div>
+
+
+            <div class="friend-req-container">
+                <div class="reqheading">Friend Requests </div>
+                    <div class = "reqbody">
+                        <div class = "user-row">
+                            <li>
+                                {% for row in requestlist %}
+                                <div class="post-container">
+                                    <p>Friend request from: {{ row[2] }} </p>
+                                            <form action="" method="post">
+                                                <input type ="number" style="display: none" id="acceptbutton" name="acceptbutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                                                <input type="submit" value="Accept">
+                                                
+                                            </form>
+                                            <form action="" method="post">
+                                                <input type ="number" style="display: none" id="denybutton" name="denybutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                                                <input type="submit" value="Deny">
+                                            </form>
+                                </div>
+                                {% endfor %}
+                            </li>
+                        </div>
+                    </div>
     </div>
-    {% endfor %}
+
+
+
+    
 </body>
 </html>
-
