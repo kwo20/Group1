@@ -89,8 +89,14 @@ def frontpage():
         cursor.execute("""SELECT * FROM posts WHERE id=12""")
         for row in cursor.fetchall():
             post_list.append(row)
+
+    #Get a list of all comments
+    cursor.execute("""SELECT * FROM comments
+                    ORDER BY comment_id ASC""")
+    comment_list = []
+    for row in cursor.fetchall():
+            comment_list.append(row)
             
-        
     if request.method == 'POST':
         #If post submit, puts post into database
         if request.form.get("post-input") is not None:
@@ -119,7 +125,7 @@ def frontpage():
                 post_list.append(row)
             current_page = current_user
             return render_template('frontpage.html', user=current_user, postlist = post_list, 
-                                    currentuser=current_user)
+                                    currentuser=current_user, commentlist = comment_list)
         #Display searched user's frontpage
         elif request.form.get("searchuser") is not None:
             current_search = request.form['searchuser']
@@ -131,7 +137,7 @@ def frontpage():
             current_page = current_search
             print (current_page)
             return render_template('frontpage.html', user=current_search, postlist = post_list,
-                                    currentuser=current_user)
+                                    currentuser=current_user, commentlist = comment_list)
         #Sends a friend request to whichever user the current page is on
         elif request.form.get("frienduser") is not None:
             friend_status = 0
@@ -145,7 +151,7 @@ def frontpage():
             for row in cursor.fetchall():
                 post_list.append(row)
             return render_template('frontpage.html', user=current_page, postlist = post_list,
-                                    currentuser=current_user)
+                                    currentuser=current_user, commentlist = comment_list)
         #Goes to friend list page
         elif request.form.get("friendlist") is not None:
             return redirect("/friends")
@@ -164,7 +170,7 @@ def frontpage():
             for row in cursor.fetchall():
                 post_list.append(row)
             return render_template('frontpage.html', user=current_page, postlist = post_list, 
-                                    currentuser=current_user)
+                                    currentuser=current_user, commentlist = comment_list)
         #Increments the like counter for the post by 1
         #Add check for already liked
         elif request.form.get('likebutton') is not None:
@@ -177,10 +183,23 @@ def frontpage():
         #Returns to current logged in user's frontpage
         elif request.form.get('return') is not None:
             return redirect("/frontpage")
+        elif request.form.get('commentbutton') is not None:
+            #print (request.form.get('commentbutton'))
+            #print (request.form.get('comment-button'))
+            if request.form.get('comment-button') is None:
+                return redirect("/frontpage")
+            else:
+                post_id = request.form.get('commentbutton')
+                comment_content = request.form.get('comment-button')
+                sql_query = """INSERT INTO comments (commenter_user, post_id, comment_content)
+                            VALUES (?, ?, ?)"""
+                cursor.execute(sql_query, (current_user, post_id, comment_content,))
+                conn.commit()
+                return redirect("/frontpage")
     else:
         current_page = current_user
         return render_template('frontpage.html', user=current_user, postlist = post_list, 
-                                currentuser=current_user)
+                                currentuser=current_user, commentlist = comment_list)
 
 #Page for friend list and friend requests
 @app.route('/friends', methods=['GET', 'POST'])
@@ -217,5 +236,8 @@ def friends_list():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+#FOR COMMENTS IN DATABASE MAKE POST ID COMMEN TIS ON, WHO POSTED, and POST CONTENT
+#WHEN PUTTING COMMENTS IN USE IF STATEMENT IN HTML, MIGHT NEED FOR LOOP ASWELL
 
     
