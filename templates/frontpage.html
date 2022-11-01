@@ -17,7 +17,7 @@
 
                 You are logged in as: 
                 <input class="btn btn-default" name="return" type="submit" value="{{ currentuser }}">
-                (click to return to your timeline)
+                
             </form>
             <ul>
                 <!--<li><a href = "templates/frontpage.html">Home</a></li>-->
@@ -102,6 +102,21 @@
                             </form>
                         </div>
                         <!--<div><img src = "{{ url_for('static', filename='share.png') }}"></div>-->
+                        <div class="post-input-container">
+                            <form action="{{ url_for('frontpage') }}" method="post">
+                                <textarea name = "comment-button" id = "comment-button" placeholder = "COMMENT" rows = 1></textarea>
+                                <input type ="number" style="display: none" id="commentbutton" name="commentbutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                                <input type="submit">
+                            </form>
+                        </div>
+                        {% for thing in commentlist %}
+                        <div class="comment-container">
+                            {% if thing[3] == row[0] %}
+                            {{ thing[4] }}
+                            <br>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -112,6 +127,20 @@
         
 
         <!--Right Sidebar-->
+
+        <!--
+        {% if user == currentuser %}
+        <div class="right-siderbar">
+
+        </div>
+        {% else %}
+        <div class="right-sidebar">            
+            <form action="" method="post">
+                <input class="friendbutton" name="frienduser" type="submit" value="Friend {{ user }}">
+            </form>
+        </div>
+        {% endif %} 
+        -->
         <div class="right-sidebar">            
             <form action="" method="post">
                 <input class="friendbutton" name="frienduser" type="submit" value="Friend {{ user }}">
