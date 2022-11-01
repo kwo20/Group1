@@ -17,7 +17,7 @@ def test_create_account():
     response = test_client.get('/create', follow_redirects=True)
     create_post = test_client.post('/create', data=dict(username='test_account', password='test_password'))
     html = create_post.data.decode()
-    assert "/login" in html
+    assert '/login' in html
     assert response.status_code == 200
     cursor.execute("DELETE FROM users WHERE username = 'test_account'")
     conn.commit()
