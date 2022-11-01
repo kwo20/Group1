@@ -28,20 +28,23 @@ def create_account():
     if request.method == 'POST':
         account_username = request.form['username']
         account_password = request.form['password']
-        #Check if username already exists
-        sql_query = """SELECT * FROM users WHERE username=?"""
-        cursor = cursor.execute(sql_query, (account_username,))
-        user_list = []
-        for row in cursor.fetchall():
-            user_list.append(row)
-        #If user does not exist, create user
-        if not user_list:
-            sql_query = """INSERT INTO users (username, password)
-                 VALUES (?, ?)"""
-            cursor = cursor.execute(sql_query, (account_username, account_password))
-            conn.commit()
-            return redirect("/login")
-        #Else return to create account page
+        if account_username.isalnum() and account_password.isalnum():
+            #Check if username already exists
+            sql_query = """SELECT * FROM users WHERE username=?"""
+            cursor = cursor.execute(sql_query, (account_username,))
+            user_list = []
+            for row in cursor.fetchall():
+                user_list.append(row)
+            #If user does not exist, create user
+            if not user_list:
+                sql_query = """INSERT INTO users (username, password)
+                    VALUES (?, ?)"""
+                cursor = cursor.execute(sql_query, (account_username, account_password))
+                conn.commit()
+                return redirect("/login")
+            #Else return to create account page
+            else:
+                return redirect("/create")
         else:
             return redirect("/create")
     else:
@@ -54,14 +57,20 @@ def login():
     cursor = conn.cursor()
     #Checks information against database, redirects to frontpage if correct.
     if request.method == 'POST':
-        cursor.execute("""SELECT password FROM users WHERE username=?""", (request.form['username'],))
-        login_info = cursor.fetchone()
-        if not login_info:
-            return render_template('login.html')
-        elif login_info[0] == request.form['password']:
-            global current_user
-            current_user = request.form['username']
-            return redirect('/frontpage')
+        account_username = request.form['username']
+        account_password = request.form['password']
+        if account_username.isalnum() and account_password.isalnum():
+            cursor.execute("""SELECT password FROM users WHERE username=?""", (request.form['username'],))
+            login_info = cursor.fetchone()
+            
+            if not login_info:
+                return render_template('login.html')
+            elif login_info[0] == request.form['password']:
+                global current_user
+                current_user = request.form['username']
+                return redirect('/frontpage')
+            else:
+                return redirect('/login')
         else:
             return redirect('/login')
     else:
@@ -140,15 +149,21 @@ def frontpage():
         #Display searched user's frontpage
         elif request.form.get("searchuser") is not None:
             current_search = request.form['searchuser']
-            sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
-            cursor.execute(sql_query, (current_search,))
-            post_list.clear()
-            for row in cursor.fetchall():
-                post_list.append(row)
-            current_page = current_search
-            print (current_page)
-            return render_template('frontpage.html', user=current_search, postlist = post_list,
-                                    currentuser=current_user, commentlist = comment_list)
+            if current_search.isalnum():
+                sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
+                cursor.execute(sql_query, (current_search,))
+                post_list.clear()
+                for row in cursor.fetchall():
+                    post_list.append(row)
+                if not post_list:
+                    return redirect('/frontpage')
+                else:
+                    current_page = current_search
+                    return render_template('frontpage.html', user=current_search, postlist = post_list,
+                                            currentuser=current_user, commentlist = comment_list)
+            else:
+                return render_template('frontpage.html', user=current_search, postlist = post_list,
+                                        currentuser=current_user, commentlist = comment_list)
         #Sends a friend request to whichever user the current page is on
         elif request.form.get("frienduser") is not None:
             #Query to determine if a friend request already exists
@@ -185,19 +200,30 @@ def frontpage():
         #Adds the shared post into the database
         elif request.form.get('sharebutton') is not None:
             sharedID = request.form.get('sharebutton')
-            sql_query = """INSERT INTO shared_posts (shared_userid, post_id)
-                     VALUES (?, ?)"""
+
+            sql_query = """SELECT * FROM shared_posts WHERE shared_userid=? AND post_id=?"""
             cursor.execute(sql_query, (current_user, sharedID,))
-            conn.commit()
-            #FIX THIS LATER
-            #Needs better query
-            sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
-            cursor.execute(sql_query, (current_page,))
-            post_list.clear()
+            check_list=[]
             for row in cursor.fetchall():
-                post_list.append(row)
-            return render_template('frontpage.html', user=current_page, postlist = post_list, 
-                                    currentuser=current_user, commentlist = comment_list)
+                check_list.append(row)
+            if not check_list:
+
+                sql_query = """INSERT INTO shared_posts (shared_userid, post_id)
+                        VALUES (?, ?)"""
+                cursor.execute(sql_query, (current_user, sharedID,))
+                conn.commit()
+                #FIX THIS LATER
+                #Needs better query
+                sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
+                cursor.execute(sql_query, (current_page,))
+                post_list.clear()
+                for row in cursor.fetchall():
+                    post_list.append(row)
+                return render_template('frontpage.html', user=current_page, postlist = post_list, 
+                                        currentuser=current_user, commentlist = comment_list)
+            else:
+                return render_template('frontpage.html', user=current_page, postlist = post_list, 
+                                        currentuser=current_user, commentlist = comment_list)
         #Increments the like counter for the post by 1
         #Add check for already liked
         elif request.form.get('likebutton') is not None:
@@ -254,17 +280,17 @@ def friends_list():
             sql_query= """UPDATE followers SET status=1 WHERE friendid=?"""
             cursor.execute(sql_query, (friend_id,))
             conn.commit()
+            return redirect('/friends')
         elif request.form.get('denybutton') is not None:
             friend_id= request.form.get('denybutton')
             sql_query= """DELETE FROM followers WHERE friendid=?"""
             cursor.execute(sql_query, (friend_id,))
             conn.commit()
+            return redirect('/friends')
     return render_template('friendlist.html', requestlist = friend_requests, friendlist=friend_list)
 
 if __name__ == "__main__":
     app.run(debug=True)
 
-#FOR COMMENTS IN DATABASE MAKE POST ID COMMEN TIS ON, WHO POSTED, and POST CONTENT
-#WHEN PUTTING COMMENTS IN USE IF STATEMENT IN HTML, MIGHT NEED FOR LOOP ASWELL
 
     
