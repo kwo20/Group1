@@ -28,11 +28,22 @@ def create_account():
     if request.method == 'POST':
         account_username = request.form['username']
         account_password = request.form['password']
-        sql_query = """INSERT INTO users (username, password)
+        #Check if username already exists
+        sql_query = """SELECT * FROM users WHERE username=?"""
+        cursor = cursor.execute(sql_query, (account_username,))
+        user_list = []
+        for row in cursor.fetchall():
+            user_list.append(row)
+        #If user does not exist, create user
+        if not user_list:
+            sql_query = """INSERT INTO users (username, password)
                  VALUES (?, ?)"""
-        cursor = cursor.execute(sql_query, (account_username, account_password))
-        conn.commit()
-        return redirect("/login")
+            cursor = cursor.execute(sql_query, (account_username, account_password))
+            conn.commit()
+            return redirect("/login")
+        #Else return to create account page
+        else:
+            return redirect("/create")
     else:
         return render_template('create.html')
 
@@ -52,7 +63,7 @@ def login():
             current_user = request.form['username']
             return redirect('/frontpage')
         else:
-            return render_template('login.html')
+            return redirect('/login')
     else:
         return render_template('login.html')
 
@@ -140,11 +151,27 @@ def frontpage():
                                     currentuser=current_user, commentlist = comment_list)
         #Sends a friend request to whichever user the current page is on
         elif request.form.get("frienduser") is not None:
-            friend_status = 0
-            sql_query = """INSERT INTO followers (follower_name, followed_name, status)
+            #Query to determine if a friend request already exists
+            sql_query = """SELECT * FROM followers WHERE follower_name=? AND followed_name=?"""
+            cursor = cursor.execute(sql_query, (current_user, current_page))
+            follower_list = []
+            for row in cursor.fetchall():
+                follower_list.append(row)
+
+            #Check if user is following themselves
+            if current_user == current_page:
+                pass
+                #DO NOTHING HERE BECAUSE THE IDIOT TRIED TO FRIEND HIMSELF
+
+            #If user did not friend themselves and don't have a friend request/friend already
+            #send friend request
+            elif not follower_list:
+                friend_status = 0
+                sql_query = """INSERT INTO followers (follower_name, followed_name, status)
                      VALUES (?, ?, ?)"""
-            cursor = cursor.execute(sql_query, (current_user, current_page, friend_status))
-            conn.commit()
+                cursor = cursor.execute(sql_query, (current_user, current_page, friend_status))
+                conn.commit()
+
             sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
             cursor.execute(sql_query, (current_page,))
             post_list.clear()
