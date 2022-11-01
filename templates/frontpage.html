@@ -104,23 +104,33 @@
                         <!--<div><img src = "{{ url_for('static', filename='share.png') }}"></div>-->
                         <div class="post-input-container">
                             <form action="{{ url_for('frontpage') }}" method="post">
-                                <textarea name = "comment-button" id = "comment-button" placeholder = "COMMENT" rows = 1></textarea>
+                                <textarea name = "comment-button" id = "comment-button" placeholder = "COMMENT" rows = 1 style="color:#bc7db9"></textarea>
                                 <input type ="number" style="display: none" id="commentbutton" name="commentbutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
                                 <input type="submit">
                             </form>
                         </div>
-                        {% for thing in commentlist %}
-                        <div class="comment-container">
-                            {% if thing[3] == row[0] %}
-                            {{ thing[4] }}
-                            <br>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
+
+                        
+                            {% for thing in commentlist %}
+                            
+
+                                {% if thing[3] == row[0]%}
+                                <div class="comment-container" >
+                                {{ thing[1] }}:
+                                {{ thing[4] }}
+                                
+                                </div>
+                                <br />
+                                {%endif%}
+                            
+                                
+                            
+                           {% endfor %}
+                        
                     </div>
                 </div>
-
             </div>
+            
             {% endfor %}
         </div>
 
