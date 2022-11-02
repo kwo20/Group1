@@ -36,6 +36,9 @@ def test_login_bypass():
     assert response.request.path is not '/frontpage'
     assert response.status_code == 200
 
+def test_friendlist():
+    test_client = app.test_client()
+    
 
     #username = 'ecology'
     #password = 'test'
