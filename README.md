@@ -1,4 +1,5 @@
 # Group1
+
 Group Info:
 
 Keith Olszewski (GH: kwo20) (Leader/Collaborator)
@@ -12,3 +13,8 @@ Darcie Dalafave (GH: darcie76) (Collaborator)
 Language: Python
 
 Framework: Flask
+
+Database: SQLite3
+
+Coding Convention: PEP 8
+
