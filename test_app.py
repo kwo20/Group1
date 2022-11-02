@@ -15,7 +15,7 @@ def test_create_account():
     cursor = conn.cursor()
     test_client = app.test_client()
     response = test_client.get('/create', follow_redirects=True)
-    create_post = test_client.post('/create', data=dict(username='test_account', password='test_password'))
+    create_post = test_client.post('/create', data=dict(username='testaccount', password='testpassword'))
     html = create_post.data.decode()
     assert '/login' in html
     assert response.status_code == 200
