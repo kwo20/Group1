@@ -100,6 +100,3 @@ def test_share():
 
     cursor.execute("DELETE FROM shared_posts WHERE shared_userid='ecology' AND post_id=13")
     conn.commit()
-
-    assert response2.request.path == '/frontpage'
-    assert response.status_code == 200
