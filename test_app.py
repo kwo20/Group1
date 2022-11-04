@@ -82,62 +82,55 @@ def test_friendsfunction():
 
     friendbuttontest.status_code == 200
 
-    def test_create_post():
+def test_create_post():
     conn = sqlite3.connect("bickerdb.sqlite")
     cursor = conn.cursor()
 
     test_client = app.test_client()
-    response = test_client.get('/', follow_redirects=True)
-    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
-    html = login_post.data.decode()
-   
-    assert "/frontpage" in html
-    
-    response2 = test_client.get('/frontpage', follow_redirects=True)
-    post_text = test_client.post('/frontpage', data=dict(post-input='test'))
-    createposttest = test_client.post('/frontpage', data=dict(postsubmit=""))
-    
-    html2 = createposttest.data.decode()
-    
-    assert createposttest.status_code == 200
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    friend_list = test_client.post('/frontpage', data=dict(post_input='test post here', postsubmit=""))
+    html2 = friend_list.data.decode()
+    assert "test post here" in html2
+    cursor.execute("DELETE FROM posts WHERE content = 'test post here'")
+    conn.commit()
 
 def test_like_post():
     conn = sqlite3.connect("bickerdb.sqlite")
     cursor = conn.cursor()
-
     test_client = app.test_client()
-    response = test_client.get('/', follow_redirects=True)
-    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
-    html = login_post.data.decode()
-
-    assert "/frontpage" in html
-
-    response2 = test_client.get('/frontpage', follow_redirects=True)
-    diffacc = test_client.post('/frontpage', data=dict(searchuser='admin', searchbutton=""))
-    likeposttest = test_client.post('/frontpage', data=dict(likebutton=""))
-    
-    html2 = likeposttest.data.decode()
-    
-    assert likeposttest.status_code == 200
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    cursor.execute("SELECT likes FROM posts WHERE id=9""")
+    original_likecount = cursor.fetchone()
+    test_client.get('/frontpage', follow_redirects=True)
+    test_client.post('/frontpage', data=dict(likebutton="9"))
+    cursor.execute("SELECT likes FROM posts WHERE id=9""")
+    original_likecount2 = cursor.fetchone()
+    assert original_likecount2 > original_likecount
+    cursor.execute("""UPDATE posts SET likes = likes - 1 WHERE id=9""")
+    conn.commit()
 
 def test_comment_post():
     conn = sqlite3.connect("bickerdb.sqlite")
     cursor = conn.cursor()
-
     test_client = app.test_client()
-    response = test_client.get('/', follow_redirects=True)
-    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
-    html = login_post.data.decode()
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    test_client.post('/frontpage', data=dict(comment_button='This is a test comment.', commentbutton="23"))
+    cursor.execute("SELECT * FROM comments WHERE comment_content = 'This is a test comment.'")
+    testlist = []
+    for row in cursor.fetchall():
+        testlist.append(row)
+    comment_exists = False
+    if testlist is not None:
+      comment_exists = True
+    assert comment_exists == True
 
-    assert "/frontpage" in html
-    
-    response2 = test_client.get('/frontpage', follow_redirects=True)
-    comment_text = test_client.post('/frontpage', data=dict(comment-button ='test comment'))
-    commenttest = test_client.post('/frontpage', data=dict(commentbutton=""))
-    
-    html2 = commenttest.data.decode()
-    
-
+    cursor.execute("DELETE FROM comments WHERE comment_content = 'This is a test comment.'")
+    conn.commit()
 
     #username = 'ecology'
     #password = 'test'
