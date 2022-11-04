@@ -45,15 +45,24 @@ def test_like():
   assert "/frontpage" in html
   response2 = test_client.get('/frontpage', follow_redirects=True)
 
-### creates a post 
-  fake_post = test_client.post('/frontpage', data=dict(post_input='test post here', postsubmit=""))
+### gets original likes on post
+  cursor.execute("SELECT likes FROM posts WHERE username = 'ecology' AND content = 'POGGERS'")
+  like_list = []
+  for row in cursor.fetchall():
+        like_list.append(row)
+### presses like button
+  likebutton = test_client.post('/frontpage', data=dict(likebutton="6"))
 
-### tests like button
-  likebutton = test_client.post('/frontpage', data=dict(likebutton=""))
-  cursor.execute("SELECT likes FROM posts WHERE id == 1")
-
-  assert response.status_code == 200
-  cursor.execute("DELETE FROM posts WHERE content = 'test post here'")
+### gets new likes on post
+  cursor.execute("SELECT likes FROM posts WHERE username = 'ecology' AND content = 'POGGERS'")
+  post_list = []
+  for row in cursor.fetchall():
+        post_list.append(row)
+  test = False
+### checks to see if likes inceased on post
+  if post_list !=  0 and  post_list > like_list:
+    test = True
+  assert test == True
 
   conn.commit()
 
@@ -65,7 +74,7 @@ def test_share():
 
     conn = sqlite3.connect("bickerdb.sqlite")
     cursor = conn.cursor()
-    ### goes to front page
+### goes to front page
     test_client = app.test_client()
     response = test_client.get('/', follow_redirects=True)
     login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
