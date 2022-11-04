@@ -1,0 +1,161 @@
+html, body {
+    margin:0;
+    padding: 0;
+    font-family: 'Rubik', sans-serif;
+
+}
+
+
+
+body{
+    width: 100%;
+    height: 100vh;
+    background-color:#245356 ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+/* Friend list box (until otherwise noted)*/
+.find-friends-container{
+    width: 400px;
+    box-shadow: 5px 5px 20px #87646d ;
+
+}
+
+.find-friends-header 
+{
+    background: rgb(135,100,109);
+    background: linear-gradient(90deg, rgba(63,21,15,1) 28%, rgba(36,83,86,1) 60%);
+}
+
+.find-friends-header .heading{
+    color: #F1F1F1;
+    font-size: 18px;
+    font-weight: 100;
+    width: 100%;
+    text-align: center;
+    padding: 25px 0;
+}
+
+/*this is for friend list search box if we need to implement TAKE OUT IN NEXT SPRINT IF NOT NEEDED*/
+/*
+.find-friends-header .search {
+    position: relative;
+
+}
+
+.find-friends-header .search img {
+    position: absolute;
+    width: 20px;
+    top: 15px;
+    left: 40px;
+
+}
+
+
+.find-friends-header .search input {
+    border: none;
+    outline: none;
+    margin: 0px 25px 25px 25px;
+    width: calc(100%-150px);
+    font-size: 16px;
+    color: #F1F1F1;
+    background-color: rgba(255,255,255, 0.1);
+    padding: 15px 50px;
+    border-radius: 40px;
+}
+
+
+.find-friends-header .search input::placeholder{
+    color:  rgba(255,255,255, 0.5)
+}
+*/
+
+/* Friend list box*/
+.find-friends-body {
+background-color: #87a49d;
+
+}
+
+.user-row{
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info{
+    display: flex;
+    align-items: center;
+}
+
+
+
+
+
+/*Handling Request box */
+.friend-req-container{
+    width: 400px;
+    box-shadow: 5px 5px 20px #87646d ;
+
+}
+
+.reqheading 
+{
+    background: rgb(135,100,109);
+    background: linear-gradient(90deg, rgba(63,21,15,1) 28%, rgba(36,83,86,1) 60%);
+    color: #F1F1F1;
+    font-size: 18px;
+    font-weight: 100;
+    width: 100%;
+    text-align: center;
+    padding: 25px 0;
+}
+
+.reqbody {
+    background-color: #87a49d;
+}
+
+
+
+
+/* these are handling the accept and deny friend request buttons*/
+input[type=submit][value = Accept]{
+    font-family: 'Rubik', sans-serif;
+    padding: 10px 20px;
+    margin: 5px 5px 5px 5px;
+    justify-content: center;
+    background-color:#245356;
+    border: none;
+    border-radius: 40px;
+}
+
+input[type=submit][value = Deny]{
+    font-family: 'Rubik', sans-serif;
+    padding: 10px 20px;
+    margin: 5px 5px 5px 5px;
+    justify-content: center;
+    background-color:#491c2e;
+    border:none;
+    border-radius: 40px;
+}
+
+/*this is making the boxes vertical lists*/
+li{
+    list-style: none;
+    display:inline-block
+}
+
+/*home button*/
+.homebutton {
+    display:flex;
+    position: absolute;
+    top: 20px;
+    left: 10px;
+}
+
+.homebutton img{
+    width: 60px;
+    margin: 0 15px;
+}

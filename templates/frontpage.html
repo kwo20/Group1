@@ -1,5 +1,160 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bicker</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylefront.css') }}">
+</head>
 <body>
-    This is the frontpage of Bicker.
+    
+    <nav>
+        <div class = "nav-left">
+            <img src="{{ url_for('static', filename='bickerlogo.png') }}" alt="Bicker Logo" class = "logo">
+            
+            <form action="" method="post">
+
+                You are logged in as: 
+                <input class="btn btn-default" name="return" type="submit" value="{{ currentuser }}">
+                
+            </form>
+            <ul>
+                <!--<li><a href = "templates/frontpage.html">Home</a></li>-->
+            </ul>
+        </div>
+
+        <div class = "nav-middle">
+            Bicker
+
+        </div>
+        <div class = "nav-right"> 
+            <div class = "search-box">
+                <img src = "{{ url_for('static', filename='searchicon.png') }}" alt = "search icon">
+            <form action="" method="post">
+                <input type="text" placeholder="Search for user here" name="searchuser" value="{{
+                    request.form.searchuser }}">
+
+                <input class="searchbutton" type="submit" value="Search">
+            </form>
+            </div>
+
+
+        </div>
+    </nav>
+
+    <div class="container">
+        <!--Left Sidebar-->
+
+        <div class="left-sidebar">
+            <div class="important-links">
+                <!--IGNORE THIS LINE UNTIL WE DEAL WITH FRIENDS FEATURE-->
+                <a href="{{ url_for('friends_list') }}" style = "color: #bc7db9;"><img src = "{{ url_for('static', filename='friendsicon.png') }}" alt = "friends icon">Friends</a>
+
+            </div>
+        </div>
+
+        <!--Main Content-->
+        <div class="main-content">
+            <div class="write-post-container">
+                <div>
+                    <p> {{ user }} </p>
+                </div>
+            </div>
+
+            <div class="post-input-container">
+                <form action="{{ url_for('frontpage') }}" method="post">
+                    <textarea name = "post-input" id = "post-input" placeholder = "What's on your mind, {{ currentuser }}?" rows = 3></textarea>
+  
+                    <button type = "submit" class = "postsubmit">
+                        Post
+                    </button>
+                </form>
+            </div>
+            {% for row in postlist %}
+            <div class="post-container">
+                <div class="timestamp">
+
+                    <!--figure out a way to get the actual time of the post-->
+                    <span>{{ row[3] }}</span>
+                    <span>{{ row[2] }}</span>
+                </div>
+
+                <p class = "post-text">{{ row[1] }}</p>
+
+                <!--IGNORE THIS DIV UNTIL INTERACTING WITH POSTS IS NECESSARY-->
+                <div class="post-row">
+                    <div class = "activity-icons">
+                        <div><form action="" method="post">
+                            <input type ="number" style="display: none" id="likebutton" name="likebutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                            <input type="submit" value="Like" class = "likebutton">
+                            <span>{{ row[4] }}</span>
+                        </form>
+                        </div>
+                            <!--when adding comments, make it class comments-->
+
+                        <div>
+                            <form action="" method="post">
+                                <input type ="number" style="display: none" id="sharebutton" name="sharebutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                                <input type="submit" value="Share" class="sharebutton">
+                            </form>
+                        </div>
+                        <!--<div><img src = "{{ url_for('static', filename='share.png') }}"></div>-->
+                        <div class="post-input-container">
+                            <form action="{{ url_for('frontpage') }}" method="post">
+                                <textarea name = "comment-button" id = "comment-button" placeholder = "COMMENT" rows = 1 style="color:#bc7db9"></textarea>
+                                <input type ="number" style="display: none" id="commentbutton" name="commentbutton" value='{{ row[0] }}' min='{{ row[0] }}' max='{{ row[0] }}'>
+                                <input type="submit">
+                            </form>
+                        </div>
+
+                        
+                            {% for thing in commentlist %}
+                            
+
+                                {% if thing[3] == row[0]%}
+                                <div class="comment-container" >
+                                {{ thing[1] }}:
+                                {{ thing[4] }}
+                                
+                                </div>
+                                <br />
+                                {%endif%}
+                            
+                                
+                            
+                           {% endfor %}
+                        
+                    </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+        </div>
+
+        
+
+        <!--Right Sidebar-->
+
+        <!--
+        {% if user == currentuser %}
+        <div class="right-siderbar">
+
+        </div>
+        {% else %}
+        <div class="right-sidebar">            
+            <form action="" method="post">
+                <input class="friendbutton" name="frienduser" type="submit" value="Friend {{ user }}">
+            </form>
+        </div>
+        {% endif %} 
+        -->
+        <div class="right-sidebar">            
+            <form action="" method="post">
+                <input class="friendbutton" name="frienduser" type="submit" value="Friend {{ user }}">
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
