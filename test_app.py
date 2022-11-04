@@ -13,13 +13,14 @@ def test_index_route():
 def test_create_account():
     conn = sqlite3.connect("bickerdb.sqlite")
     cursor = conn.cursor()
+    
     test_client = app.test_client()
     response = test_client.get('/create', follow_redirects=True)
     create_post = test_client.post('/create', data=dict(username='testaccount', password='testpassword'))
     html = create_post.data.decode()
     assert '/login' in html
     assert response.status_code == 200
-    cursor.execute("DELETE FROM users WHERE username = 'test_account'")
+    cursor.execute("DELETE FROM users WHERE username = 'testaccount'")
     conn.commit()
 
 def test_login():
@@ -36,8 +37,54 @@ def test_login_bypass():
     assert response.request.path is not '/frontpage'
     assert response.status_code == 200
 
-def test_friendlist():
+def test_friendpage():
     test_client = app.test_client()
+    response = test_client.get('/', follow_redirects=True)
+    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
+    html = login_post.data.decode()
+    assert "/frontpage" in html
+    response2 = test_client.get('/friends', follow_redirects=True)
+    assert response2.request.path == "/friends"
+    response2.status_code == 200
+
+def test_friendsbutton():
+    test_client = app.test_client()
+    response = test_client.get('/', follow_redirects=True)
+    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
+
+    response2 = test_client.get('/frontpage', follow_redirects=True)
+    html = response2.data.decode()
+
+    assert 'Friend ecology' in html
+    assert response.status_code == 200
+    assert response2.status_code == 200
+
+def test_friendsfunction():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+
+    test_client = app.test_client()
+    response = test_client.get('/', follow_redirects=True)
+    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
+    html = login_post.data.decode()
+
+    assert "/frontpage" in html
+
+    response2 = test_client.get('/frontpage', follow_redirects=True)
+    diffacc = test_client.post('/frontpage', data=dict(searchuser='admin', searchbutton=""))
+    friendbuttontest = test_client.post('/frontpage', data=dict(friendbutton=""))
+
+    friendbuttontest = test_client.get('/friends', follow_redirects=True)
+    html2 = friendbuttontest.data.decode()
+
+    assert friendbuttontest.request.path == "/friends"
+    assert "admin" in html2
+
+    friendbuttontest.status_code == 200
+
+
+
+
     
 
     #username = 'ecology'
