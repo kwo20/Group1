@@ -82,10 +82,62 @@ def test_friendsfunction():
 
     friendbuttontest.status_code == 200
 
+    def test_create_post():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
 
-
-
+    test_client = app.test_client()
+    response = test_client.get('/', follow_redirects=True)
+    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
+    html = login_post.data.decode()
+   
+    assert "/frontpage" in html
     
+    response2 = test_client.get('/frontpage', follow_redirects=True)
+    post_text = test_client.post('/frontpage', data=dict(post-input='test'))
+    createposttest = test_client.post('/frontpage', data=dict(postsubmit=""))
+    
+    html2 = createposttest.data.decode()
+    
+    assert createposttest.status_code == 200
+
+def test_like_post():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+
+    test_client = app.test_client()
+    response = test_client.get('/', follow_redirects=True)
+    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
+    html = login_post.data.decode()
+
+    assert "/frontpage" in html
+
+    response2 = test_client.get('/frontpage', follow_redirects=True)
+    diffacc = test_client.post('/frontpage', data=dict(searchuser='admin', searchbutton=""))
+    likeposttest = test_client.post('/frontpage', data=dict(likebutton=""))
+    
+    html2 = likeposttest.data.decode()
+    
+    assert likeposttest.status_code == 200
+
+def test_comment_post():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+
+    test_client = app.test_client()
+    response = test_client.get('/', follow_redirects=True)
+    login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
+    html = login_post.data.decode()
+
+    assert "/frontpage" in html
+    
+    response2 = test_client.get('/frontpage', follow_redirects=True)
+    comment_text = test_client.post('/frontpage', data=dict(comment-button ='test comment'))
+    commenttest = test_client.post('/frontpage', data=dict(commentbutton=""))
+    
+    html2 = commenttest.data.decode()
+    
+
 
     #username = 'ecology'
     #password = 'test'
