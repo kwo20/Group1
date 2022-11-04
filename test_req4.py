@@ -37,7 +37,7 @@ def test_comment():
 def test_like():
   conn = sqlite3.connect("bickerdb.sqlite")
   cursor = conn.cursor()
-### goest to front page
+### goes to front page
   test_client = app.test_client()
   response = test_client.get('/', follow_redirects=True)
   login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
@@ -65,6 +65,7 @@ def test_share():
 
     conn = sqlite3.connect("bickerdb.sqlite")
     cursor = conn.cursor()
+    ### goes to front page
     test_client = app.test_client()
     response = test_client.get('/', follow_redirects=True)
     login_post = test_client.post('/login', data=dict(username='ecology', password='test'))
@@ -75,9 +76,10 @@ def test_share():
     searchbutton = test_client.post('/frontpage', data=dict(searchuser='admin1', searchbutton=""))
     html2 = searchbutton.data.decode()
     assert "admin1" in html2
-
+### pressing share button
     test_client.post('/frontpage', data=dict(sharebutton="13"))
 
+###checking database to see if post was shared
     cursor.execute("SELECT * FROM shared_posts WHERE shared_userid='ecology' AND post_id=13""")
     post_list = []
     for row in cursor.fetchall():
