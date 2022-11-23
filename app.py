@@ -119,8 +119,8 @@ def frontpage():
             
     if request.method == 'POST':
         #If post submit, puts post into database
-        if request.form.get("post-input") is not None:
-            new_post = request.form['post-input']
+        if request.form.get("post_input") is not None:
+            new_post = request.form['post_input']
             sql_query = """INSERT INTO posts (content, username)
                     VALUES (?, ?)"""
             cursor = cursor.execute(sql_query, (new_post, current_user))
@@ -239,11 +239,11 @@ def frontpage():
         elif request.form.get('commentbutton') is not None:
             #print (request.form.get('commentbutton'))
             #print (request.form.get('comment-button'))
-            if request.form.get('comment-button') is None:
+            if request.form.get('comment_button') is None:
                 return redirect("/frontpage")
             else:
                 post_id = request.form.get('commentbutton')
-                comment_content = request.form.get('comment-button')
+                comment_content = request.form.get('comment_button')
                 sql_query = """INSERT INTO comments (commenter_user, post_id, comment_content)
                             VALUES (?, ?, ?)"""
                 cursor.execute(sql_query, (current_user, post_id, comment_content,))
