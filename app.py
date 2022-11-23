@@ -4,6 +4,8 @@ import sqlite3
 import random
 current_user = None
 current_page = None
+user_list = None
+search_post_list = None
 app = Flask(__name__)
 #Connect to database
 def db_connection():
@@ -81,6 +83,8 @@ def login():
 def frontpage():
     global current_user
     global current_page
+    global user_list
+    global search_post_list
     #Check for URL bypassing
     if current_user is None:
         return redirect("/login")
@@ -119,8 +123,8 @@ def frontpage():
             
     if request.method == 'POST':
         #If post submit, puts post into database
-        if request.form.get("post-input") is not None:
-            new_post = request.form['post-input']
+        if request.form.get("post_input") is not None:
+            new_post = request.form['post_input']
             sql_query = """INSERT INTO posts (content, username)
                     VALUES (?, ?)"""
             cursor = cursor.execute(sql_query, (new_post, current_user))
@@ -150,7 +154,23 @@ def frontpage():
         elif request.form.get("searchuser") is not None:
             current_search = request.form['searchuser']
             if current_search.isalnum():
-                sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
+                
+                sql_query = """SELECT * FROM users WHERE username LIKE ?"""
+                cursor.execute(sql_query, ('%'+current_search+'%',))
+                user_list = []
+                for row in cursor.fetchall():
+                    user_list.append(row)
+                sql_query = """SELECT * FROM posts WHERE content LIKE ?"""
+                cursor.execute(sql_query, ('%'+current_search+'%',))
+                search_post_list = []
+                for row in cursor.fetchall():
+                    search_post_list.append(row)
+                if not search_post_list and not user_list:
+                    return redirect('/frontpage')
+                else:
+                    return redirect('/search')
+                """
+                sql_query = SELECT * FROM posts WHERE username=? ORDER BY id DESC
                 cursor.execute(sql_query, (current_search,))
                 post_list.clear()
                 for row in cursor.fetchall():
@@ -161,6 +181,7 @@ def frontpage():
                     current_page = current_search
                     return render_template('frontpage.html', user=current_search, postlist = post_list,
                                             currentuser=current_user, commentlist = comment_list)
+                """
             else:
                 return render_template('frontpage.html', user=current_search, postlist = post_list,
                                         currentuser=current_user, commentlist = comment_list)
@@ -239,11 +260,11 @@ def frontpage():
         elif request.form.get('commentbutton') is not None:
             #print (request.form.get('commentbutton'))
             #print (request.form.get('comment-button'))
-            if request.form.get('comment-button') is None:
+            if request.form.get('comment_button') is None:
                 return redirect("/frontpage")
             else:
                 post_id = request.form.get('commentbutton')
-                comment_content = request.form.get('comment-button')
+                comment_content = request.form.get('comment_button')
                 sql_query = """INSERT INTO comments (commenter_user, post_id, comment_content)
                             VALUES (?, ?, ?)"""
                 cursor.execute(sql_query, (current_user, post_id, comment_content,))
@@ -289,6 +310,10 @@ def friends_list():
             return redirect('/friends')
     return render_template('friendlist.html', requestlist = friend_requests, friendlist=friend_list)
 
+@app.route('/search', methods=['GET', 'POST'])
+def search_list():
+    global user_list
+    return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
 if __name__ == "__main__":
     app.run(debug=True)
 
