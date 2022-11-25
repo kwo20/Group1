@@ -314,6 +314,9 @@ def friends_list():
 def search_list():
     global user_list
     return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

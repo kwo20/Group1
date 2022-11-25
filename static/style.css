@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  
 }
 
 body {
@@ -81,3 +82,6 @@ body {
   background: #b6c2bf;
 }
 
+.container{
+  text-align: center;
+}
