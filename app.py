@@ -2,10 +2,14 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 import json
 import sqlite3
 import random
+
 current_user = None
 current_page = None
 user_list = None
 search_post_list = None
+search_page = False
+selected_user = None
+
 app = Flask(__name__)
 #Connect to database
 def db_connection():
@@ -55,6 +59,8 @@ def create_account():
 #Page for logging into Bicker
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global search_page
+    search_page = False
     conn = db_connection()
     cursor = conn.cursor()
     #Checks information against database, redirects to frontpage if correct.
@@ -85,9 +91,18 @@ def frontpage():
     global current_page
     global user_list
     global search_post_list
+    global search_page
+    global selected_user
+
     #Check for URL bypassing
     if current_user is None:
         return redirect("/login")
+
+    #Checks if you're coming from search page
+    #The boolean resets to false when you leave the frontpage and go back to it
+    #example: frontpage -> friends -> frontpage would make it False again, if originally True
+    #The check generally works (i think), but the statements after it don't atm
+    
     conn = db_connection()
     cursor = conn.cursor()
     #Obtains all posts, shared post, and followed posts
@@ -270,6 +285,30 @@ def frontpage():
                 cursor.execute(sql_query, (current_user, post_id, comment_content,))
                 conn.commit()
                 return redirect("/frontpage")
+    
+    elif search_page == True:
+        search_page = False
+        sql_query = """SELECT id, content, username, created_at, likes, follower_name
+                  FROM posts
+                  INNER JOIN followers ON username=followed_name
+                  WHERE follower_name=?
+                  UNION ALL
+                  SELECT id, content, username, created_at, likes, 'blank' AS follower_name
+                  FROM posts
+                  WHERE username=?
+                  UNION ALL
+                  SELECT id, content, username, created_at, likes, 'blank' AS follower_name
+                  FROM posts
+                  INNER JOIN shared_posts ON id=post_id
+                  WHERE shared_userid=?
+                  ORDER BY id DESC"""
+        cursor.execute(sql_query, (selected_user, selected_user, selected_user))
+        post_list.clear()
+        for row in cursor.fetchall():
+            post_list.append(row)
+        return render_template('frontpage.html', user=selected_user, postlist = post_list, 
+                                currentuser=current_user, commentlist = comment_list)
+    
     else:
         current_page = current_user
         return render_template('frontpage.html', user=current_user, postlist = post_list, 
@@ -280,6 +319,10 @@ def frontpage():
 def friends_list():
     global current_user
     global current_page
+    global search_page
+
+    search_page = False
+
     conn = db_connection()
     cursor = conn.cursor()
     #Select all friend requests from database
@@ -313,7 +356,18 @@ def friends_list():
 @app.route('/search', methods=['GET', 'POST'])
 def search_list():
     global user_list
+    global current_user
+    global search_page
+    global selected_user
+    search_page = True
+    if request.method == 'POST':
+        if request.form.get('input_field') is not None:
+            selected_user = request.form.get('input_field')
+            return redirect('/frontpage')
     return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 
