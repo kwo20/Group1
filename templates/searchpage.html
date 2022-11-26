@@ -42,7 +42,16 @@
 
         <h3>
           
-          {{ row[1] }} -<a href = "{{ url_for('frontpage') }}"> (posted by {{row[2]}})</a>
+          {{ row[1] }} - (posted by
+             <div>
+            <form action="" method="post">
+              <input type="hidden" name="input_field" id="input_field" value="{{ row[2] }}">
+              <input type="submit" value="{{ row[2] }}" class = "userbutton"> )
+            </form>
+          </div>
+          <br>
+       
+          
           
         </h3>
       {% endfor %}
