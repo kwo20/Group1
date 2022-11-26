@@ -2,17 +2,50 @@
   <head>
     <title>Search for Another User</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
   </head>
   <body>
     <div class="container">
+      <h1>Search Results</h1>
+      <br> <br>
+
+      <h2>Relevant Users:</h2>
+
+      <div class = "searched_users">
       {% for row in userlist %}
-        <h1>{{ row[0] }}</h1>
+        <h3>
+         
+          <!-- <a href = "{{ url_for('frontpage') }}">
+          {{ row[0] }}
+          </a> -->
+          <div>
+            <form action="" method="post">
+              <input type="hidden" name="input_field" id="input_field" value="{{ row[0] }}">
+              <input type="submit" value="{{ row[0] }}" class = "userbutton">
+            </form>
+          </div>
+        </h3>
       {% endfor %}
+      </div>
+
+      <br>
       <h1> /////////////////////////////////// </h1>
+      <br>
+
+      <h2>Relevant Posts:</h2>
+
+      <div class = "searched_posts">
       {% for row in searchpostlist %}
-        <h1>{{ row[1] }}</h1>
+
+        <h3>
+          
+          {{ row[1] }} -<a href = "{{ url_for('frontpage') }}"> (posted by {{row[2]}})</a>
+          
+        </h3>
       {% endfor %}
+      </div>
+
     </div>
   </body>
 </html>
