@@ -8,7 +8,9 @@ current_page = None
 user_list = None
 search_post_list = None
 search_page = False
+
 selected_user = None
+
 
 app = Flask(__name__)
 #Connect to database
@@ -92,7 +94,9 @@ def frontpage():
     global user_list
     global search_post_list
     global search_page
+
     global selected_user
+
 
     #Check for URL bypassing
     if current_user is None:
@@ -102,7 +106,7 @@ def frontpage():
     #The boolean resets to false when you leave the frontpage and go back to it
     #example: frontpage -> friends -> frontpage would make it False again, if originally True
     #The check generally works (i think), but the statements after it don't atm
-    
+
     conn = db_connection()
     cursor = conn.cursor()
     #Obtains all posts, shared post, and followed posts
@@ -358,12 +362,14 @@ def search_list():
     global user_list
     global current_user
     global search_page
+
     global selected_user
     search_page = True
     if request.method == 'POST':
         if request.form.get('input_field') is not None:
             selected_user = request.form.get('input_field')
             return redirect('/frontpage')
+
     return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
 
 

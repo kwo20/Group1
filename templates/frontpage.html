@@ -32,7 +32,7 @@
             <div class = "search-box">
                 <img src = "{{ url_for('static', filename='searchicon.png') }}" alt = "search icon">
             <form action="" method="post">
-                <input type="text" placeholder="Search for user here" name="searchuser" value="{{
+                <input type="text" placeholder="Search for user or post here" name="searchuser" value="{{
                     request.form.searchuser }}">
 
                 <input class="searchbutton" type="submit" value="Search">
