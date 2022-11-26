@@ -9,6 +9,9 @@ user_list = None
 search_post_list = None
 search_page = False
 
+selected_user = None
+
+
 app = Flask(__name__)
 #Connect to database
 def db_connection():
@@ -92,6 +95,9 @@ def frontpage():
     global search_post_list
     global search_page
 
+    global selected_user
+
+
     #Check for URL bypassing
     if current_user is None:
         return redirect("/login")
@@ -100,15 +106,6 @@ def frontpage():
     #The boolean resets to false when you leave the frontpage and go back to it
     #example: frontpage -> friends -> frontpage would make it False again, if originally True
     #The check generally works (i think), but the statements after it don't atm
-    if search_page == True:
-        current_page = 'ecology'
-        print(current_user)
-        print(current_page)
-        print(search_page)
-
-    else:
-        print(current_user)
-        print(current_page)
 
     conn = db_connection()
     cursor = conn.cursor()
@@ -292,6 +289,30 @@ def frontpage():
                 cursor.execute(sql_query, (current_user, post_id, comment_content,))
                 conn.commit()
                 return redirect("/frontpage")
+    
+    elif search_page == True:
+        search_page = False
+        sql_query = """SELECT id, content, username, created_at, likes, follower_name
+                  FROM posts
+                  INNER JOIN followers ON username=followed_name
+                  WHERE follower_name=?
+                  UNION ALL
+                  SELECT id, content, username, created_at, likes, 'blank' AS follower_name
+                  FROM posts
+                  WHERE username=?
+                  UNION ALL
+                  SELECT id, content, username, created_at, likes, 'blank' AS follower_name
+                  FROM posts
+                  INNER JOIN shared_posts ON id=post_id
+                  WHERE shared_userid=?
+                  ORDER BY id DESC"""
+        cursor.execute(sql_query, (selected_user, selected_user, selected_user))
+        post_list.clear()
+        for row in cursor.fetchall():
+            post_list.append(row)
+        return render_template('frontpage.html', user=selected_user, postlist = post_list, 
+                                currentuser=current_user, commentlist = comment_list)
+    
     else:
         current_page = current_user
         return render_template('frontpage.html', user=current_user, postlist = post_list, 
@@ -341,7 +362,13 @@ def search_list():
     global user_list
     global current_user
     global search_page
+
+    global selected_user
     search_page = True
+    if request.method == 'POST':
+        if request.form.get('input_field') is not None:
+            selected_user = request.form.get('input_field')
+            return redirect('/frontpage')
 
     return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
 
