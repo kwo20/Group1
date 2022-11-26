@@ -15,7 +15,7 @@
       <div class = "searched_users">
       {% for row in userlist %}
         <h3>
-          <a href = "{{ url_for('frontpage', current_user= 'ecology') }}">
+          <a href = "{{ url_for('frontpage') }}">
           {{ row[0] }}
           </a>
         </h3>
@@ -32,9 +32,9 @@
       {% for row in searchpostlist %}
 
         <h3>
-          <a href = "{{ url_for('frontpage') }}">
-          {{ row[1] }} - (posted by {{row[2]}})
-          </a>
+          
+          {{ row[1] }} -<a href = "{{ url_for('frontpage') }}"> (posted by {{row[2]}})</a>
+          
         </h3>
       {% endfor %}
       </div>

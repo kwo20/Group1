@@ -2,10 +2,13 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 import json
 import sqlite3
 import random
+
 current_user = None
 current_page = None
 user_list = None
 search_post_list = None
+search_page = False
+
 app = Flask(__name__)
 #Connect to database
 def db_connection():
@@ -55,6 +58,8 @@ def create_account():
 #Page for logging into Bicker
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global search_page
+    search_page = False
     conn = db_connection()
     cursor = conn.cursor()
     #Checks information against database, redirects to frontpage if correct.
@@ -85,9 +90,26 @@ def frontpage():
     global current_page
     global user_list
     global search_post_list
+    global search_page
+
     #Check for URL bypassing
     if current_user is None:
         return redirect("/login")
+
+    #Checks if you're coming from search page
+    #The boolean resets to false when you leave the frontpage and go back to it
+    #example: frontpage -> friends -> frontpage would make it False again, if originally True
+    #The check generally works (i think), but the statements after it don't atm
+    if search_page == True:
+        current_page = 'ecology'
+        print(current_user)
+        print(current_page)
+        print(search_page)
+
+    else:
+        print(current_user)
+        print(current_page)
+
     conn = db_connection()
     cursor = conn.cursor()
     #Obtains all posts, shared post, and followed posts
@@ -280,6 +302,10 @@ def frontpage():
 def friends_list():
     global current_user
     global current_page
+    global search_page
+
+    search_page = False
+
     conn = db_connection()
     cursor = conn.cursor()
     #Select all friend requests from database
@@ -313,6 +339,10 @@ def friends_list():
 @app.route('/search', methods=['GET', 'POST'])
 def search_list():
     global user_list
+    global current_user
+    global search_page
+    search_page = True
+
     return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
 
 
