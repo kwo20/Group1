@@ -425,7 +425,7 @@ def edit_profile():
         return render_template('editprofile.html')
     else:
         return render_template('editprofile.html')
-
+        
 if __name__ == "__main__":
     app.run(debug=True)
 
