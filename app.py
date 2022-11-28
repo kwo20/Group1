@@ -2,8 +2,14 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 import json
 import sqlite3
 import random
+
 current_user = None
 current_page = None
+user_list = None
+search_post_list = None
+search_page = False
+selected_user = None
+
 app = Flask(__name__)
 #Connect to database
 def db_connection():
@@ -53,6 +59,8 @@ def create_account():
 #Page for logging into Bicker
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global search_page
+    search_page = False
     conn = db_connection()
     cursor = conn.cursor()
     #Checks information against database, redirects to frontpage if correct.
@@ -81,9 +89,20 @@ def login():
 def frontpage():
     global current_user
     global current_page
+    global user_list
+    global search_post_list
+    global search_page
+    global selected_user
+
     #Check for URL bypassing
     if current_user is None:
         return redirect("/login")
+
+    #Checks if you're coming from search page
+    #The boolean resets to false when you leave the frontpage and go back to it
+    #example: frontpage -> friends -> frontpage would make it False again, if originally True
+    #The check generally works (i think), but the statements after it don't atm
+    
     conn = db_connection()
     cursor = conn.cursor()
     #Obtains all posts, shared post, and followed posts
@@ -150,7 +169,23 @@ def frontpage():
         elif request.form.get("searchuser") is not None:
             current_search = request.form['searchuser']
             if current_search.isalnum():
-                sql_query = """SELECT * FROM posts WHERE username=? ORDER BY id DESC"""
+                
+                sql_query = """SELECT * FROM users WHERE username LIKE ?"""
+                cursor.execute(sql_query, ('%'+current_search+'%',))
+                user_list = []
+                for row in cursor.fetchall():
+                    user_list.append(row)
+                sql_query = """SELECT * FROM posts WHERE content LIKE ?"""
+                cursor.execute(sql_query, ('%'+current_search+'%',))
+                search_post_list = []
+                for row in cursor.fetchall():
+                    search_post_list.append(row)
+                if not search_post_list and not user_list:
+                    return redirect('/frontpage')
+                else:
+                    return redirect('/search')
+                """
+                sql_query = SELECT * FROM posts WHERE username=? ORDER BY id DESC
                 cursor.execute(sql_query, (current_search,))
                 post_list.clear()
                 for row in cursor.fetchall():
@@ -161,6 +196,7 @@ def frontpage():
                     current_page = current_search
                     return render_template('frontpage.html', user=current_search, postlist = post_list,
                                             currentuser=current_user, commentlist = comment_list)
+                """
             else:
                 return render_template('frontpage.html', user=current_search, postlist = post_list,
                                         currentuser=current_user, commentlist = comment_list)
@@ -249,6 +285,31 @@ def frontpage():
                 cursor.execute(sql_query, (current_user, post_id, comment_content,))
                 conn.commit()
                 return redirect("/frontpage")
+    
+    elif search_page == True:
+        search_page = False
+        sql_query = """SELECT id, content, username, created_at, likes, follower_name
+                  FROM posts
+                  INNER JOIN followers ON username=followed_name
+                  WHERE follower_name=?
+                  UNION ALL
+                  SELECT id, content, username, created_at, likes, 'blank' AS follower_name
+                  FROM posts
+                  WHERE username=?
+                  UNION ALL
+                  SELECT id, content, username, created_at, likes, 'blank' AS follower_name
+                  FROM posts
+                  INNER JOIN shared_posts ON id=post_id
+                  WHERE shared_userid=?
+                  ORDER BY id DESC"""
+        cursor.execute(sql_query, (selected_user, selected_user, selected_user))
+        post_list.clear()
+        for row in cursor.fetchall():
+            post_list.append(row)
+        current_page = selected_user
+        return render_template('frontpage.html', user=selected_user, postlist = post_list, 
+                                currentuser=current_user, commentlist = comment_list)
+    
     else:
         current_page = current_user
         return render_template('frontpage.html', user=current_user, postlist = post_list, 
@@ -259,6 +320,10 @@ def frontpage():
 def friends_list():
     global current_user
     global current_page
+    global search_page
+
+    search_page = False
+
     conn = db_connection()
     cursor = conn.cursor()
     #Select all friend requests from database
@@ -289,12 +354,78 @@ def friends_list():
             return redirect('/friends')
     return render_template('friendlist.html', requestlist = friend_requests, friendlist=friend_list)
 
+@app.route('/search', methods=['GET', 'POST'])
+def search_list():
+    global user_list
+    global current_user
+    global search_page
+    global selected_user
+    search_page = True
+    if request.method == 'POST':
+        if request.form.get('input_field') is not None:
+            selected_user = request.form.get('input_field')
+            return redirect('/frontpage')
+            
+    return render_template('searchpage.html', userlist = user_list, searchpostlist = search_post_list)
+
+
 #Page for user profile
 @app.route('/profilepage', methods=['GET', 'POST'])
 def profile_page():
-    return render_template('profilepage.html', profilepage=profile_page)
+    global current_user
+    global selected_user
+    global current_page
 
+    conn = db_connection()
+    cursor = conn.cursor()
+    
+    if current_user == current_page:
+        sql_query = """SELECT * FROM users WHERE username=?"""
+        cursor.execute(sql_query, (current_user,))
+        userlist = []
+        for row in cursor.fetchall():
+            userlist.append(row)
+        sql_query = """SELECT 2 FROM posts WHERE username=? ORDER BY id DESC"""
+        cursor.execute(sql_query, (current_user,))
+        postlist = []
+        for row in cursor.fetchall():
+            postlist.append(row)
+        return render_template('profilepage.html', user=userlist, post=postlist, check=True)
+    else:
+        sql_query = """SELECT * FROM users WHERE username=?"""
+        cursor.execute(sql_query, (selected_user,))
+        userlist = []
+        for row in cursor.fetchall():
+            userlist.append(row)
+        sql_query = """SELECT 2 FROM posts WHERE username=? ORDER BY id DESC"""
+        cursor.execute(sql_query, (selected_user,))
+        postlist = []
+        for row in cursor.fetchall():
+            postlist.append(row)
+        return render_template('profilepage.html', user=userlist, post=postlist, check=False)
 
+@app.route('/edit', methods=['GET', 'POST'])
+def edit_profile():
+    global current_user
+
+    conn = db_connection()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        if request.form.get('username') is not None:
+            name_update = request.form.get('username')
+            sql_query= """UPDATE users SET firstname=? WHERE username=?"""
+            cursor.execute(sql_query, (name_update, current_user,))
+            conn.commit()
+        elif request.form.get('bio') is not None:
+            bio_update = request.form.get('bio')
+            sql_query= """UPDATE users SET bio=? WHERE username=?"""
+            cursor.execute(sql_query, (bio_update, current_user,))
+            conn.commit()
+        return render_template('editprofile.html')
+    else:
+        return render_template('editprofile.html')
+        
 if __name__ == "__main__":
     app.run(debug=True)
 
