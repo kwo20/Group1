@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bicker</title>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='profilepage.css') }}">
+</head>
+
+<body>
+    <div class="nav-top">
+        <div class="homebutton">
+            <div class="important-links">
+
+                <a href="{{ url_for('frontpage') }}" style = "color: #bc7db9;">
+                    <img src = "{{ url_for('static', filename='bickerlogo.png') }}" alt = "home icon">Home</a>
+                <a href="{{ url_for('friends_list') }}" style = "color: #bc7db9;">
+                    <img src = "{{ url_for('static', filename='friendsicon.png') }}" alt = "friends icon">Friends</a>
+
+            </div>
+        </div>
+    
+    </div>
+    {% for row in user %}
+    <div class="container">
+        <div class="box">
+            <img src="{{ url_for('static', filename='anonymoususer.png') }}">
+            <ul>
+                <li>{{ row[0] }}</li>
+                {% if row[2] == None %}
+                <br>
+                {% else %}
+                <li>{{ row[2] }}</li>
+                {% endif %}
+                <li>{{ row[4] }}</li>
+                {% if check == True %}
+                <a href="{{ url_for('edit_profile') }}" style = "color: #bc7db9;">edit profile</a>
+                {% else %}
+                <br>
+                {% endif %}
+            </ul>
+        </div>
+       
+    </div>
+    {% endfor %}
+
+</body>
