@@ -289,6 +289,12 @@ def friends_list():
             return redirect('/friends')
     return render_template('friendlist.html', requestlist = friend_requests, friendlist=friend_list)
 
+#Page for user profile
+@app.route('/profilepage', methods=['GET', 'POST'])
+def profile_page():
+    return render_template('profilepage.html', profilepage=profile_page)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 
