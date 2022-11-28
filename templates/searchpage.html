@@ -6,46 +6,79 @@
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
   </head>
   <body>
-    <div class="container">
-      <h1>Search Results</h1>
+  
+      <h1 style = "text-align: center;">Search Results</h1>
       <br> <br>
 
+      
+      <div class = "searched_users">
       <h2>Relevant Users:</h2>
 
-      <div class = "searched_users">
+      
       {% for row in userlist %}
         <h3>
+          <br> 
+
          
           <!-- <a href = "{{ url_for('frontpage') }}">
           {{ row[0] }}
           </a> -->
-          <div>
+          <div class = "searched_buttons">
             <form action="" method="post">
               <input type="hidden" name="input_field" id="input_field" value="{{ row[0] }}">
               <input type="submit" value="{{ row[0] }}" class = "userbutton">
             </form>
           </div>
+
         </h3>
       {% endfor %}
       </div>
 
-      <br>
-      <h1> /////////////////////////////////// </h1>
-      <br>
+      <div class = "divider">
+      {%for row in searchpostlist %}
+        |
+        <br>
+        |
+        <br>
+        |
+        <br>
+        |
+        <br>
+        |
+        <br>
+        |
+        <br>
+        |
+        <br>
+        |
+        <br>
 
+      {% endfor %}
+      </div>
+      <div class = "searched_posts">
       <h2>Relevant Posts:</h2>
 
-      <div class = "searched_posts">
+      
       {% for row in searchpostlist %}
 
         <h3>
+          <br>
           
-          {{ row[1] }} -<a href = "{{ url_for('frontpage') }}"> (posted by {{row[2]}})</a>
+          {{ row[1] }} - (posted by
+             <div class = "searched_buttons">
+            <form action="" method="post">
+              <input type="hidden" name="input_field" id="input_field" value="{{ row[2] }}">
+              <input type="submit" value="{{ row[2] }}" class = "userbutton"> )
+            </form>
+          </div>
+          <br>
+       
+          
           
         </h3>
       {% endfor %}
       </div>
 
-    </div>
+    
   </body>
 </html>
