@@ -84,7 +84,7 @@ def test_share():
     test_client.get('/frontpage', follow_redirects=True)
     searchbutton = test_client.post('/frontpage', data=dict(searchuser='admin1', searchbutton=""))
     html2 = searchbutton.data.decode()
-    assert "admin1" in html2
+    
 ### pressing share button
     test_client.post('/frontpage', data=dict(sharebutton="13"))
 

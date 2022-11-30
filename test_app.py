@@ -132,6 +132,79 @@ def test_comment_post():
     cursor.execute("DELETE FROM comments WHERE comment_content = 'This is a test comment.'")
     conn.commit()
 
+def test_search_page():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+    test_client = app.test_client()
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    test = test_client.post('/frontpage', follow_redirects=True, data=dict(searchuser='admin', searchbutton=""))
+    assert test.request.path == '/search'
+
+def test_profile_page():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+    test_client = app.test_client()
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    page_test = test_client.get('/profilepage')
+    assert page_test.request.path == '/profilepage'
+
+def test_edit_page():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+    test_client = app.test_client()
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    test_client.get('/profilepage')
+    page_test = test_client.get('/edit')
+    assert page_test.request.path == '/edit'
+
+def test_edit_bad_input():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+    test_client = app.test_client()
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    test_client.get('/profilepage')
+    test_client.get('/edit')
+    test_client.post('/edit', follow_redirects=True, data=dict(username='[[['))
+    cursor.execute("SELECT * FROM users WHERE firstname = 'Keith Olszewski'")
+    testlist = []
+    for row in cursor.fetchall():
+        testlist.append(row)
+    name_exists = False
+    if testlist is not None:
+      name_exists = True
+    assert name_exists == True
+    
+def test_edit_good_input():
+    conn = sqlite3.connect("bickerdb.sqlite")
+    cursor = conn.cursor()
+    test_client = app.test_client()
+    test_client.get('/', follow_redirects=True)
+    test_client.post('/login', data=dict(username='ecology', password='test'))
+    test_client.get('/frontpage', follow_redirects=True)
+    test_client.get('/profilepage')
+    test_client.get('/edit')
+    test_client.post('/edit', follow_redirects=True, data=dict(username='Bucky'))
+    cursor.execute("SELECT * FROM users WHERE firstname = 'Bucky'")
+    testlist = []
+    for row in cursor.fetchall():
+        testlist.append(row)
+    name_exists = False
+    if testlist is not None:
+      name_exists = True
+    assert name_exists == True
+
+    cursor.execute("UPDATE users SET firstname='Keith Olszewski' WHERE username='ecology'")
+    conn.commit()
+    
+
     #username = 'ecology'
     #password = 'test'
     #test_client.post('/login', data=dict(test_user='ecology', test_pass='test'))
