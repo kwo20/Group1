@@ -144,6 +144,7 @@ def frontpage():
                     VALUES (?, ?)"""
             cursor = cursor.execute(sql_query, (new_post, current_user))
             conn.commit()
+            
             sql_query = """SELECT id, content, username, created_at, likes, follower_name
                   FROM posts
                   INNER JOIN followers ON username=followed_name
@@ -158,7 +159,7 @@ def frontpage():
                   INNER JOIN shared_posts ON id=post_id
                   WHERE shared_userid=?
                   ORDER BY id DESC"""
-            cursor.execute(sql_query, (current_user, current_user, current_user))
+            cursor.execute(sql_query, (current_user, current_user, current_user,))
             post_list.clear()
             for row in cursor.fetchall():
                 post_list.append(row)
@@ -413,7 +414,17 @@ def edit_profile():
 
     if request.method == 'POST':
         if request.form.get('username') is not None:
+            
             name_update = request.form.get('username')
+            for letter in name_update:
+                if letter.isalnum():
+                    print(letter)
+                    pass
+                elif letter == ' ':
+                    print(letter)
+                    pass
+                else:
+                    return render_template('editprofile.html')
             sql_query= """UPDATE users SET firstname=? WHERE username=?"""
             cursor.execute(sql_query, (name_update, current_user,))
             conn.commit()
