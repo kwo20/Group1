@@ -35,7 +35,11 @@
                 {% else %}
                 <li>{{ row[2] }}</li>
                 {% endif %}
+                {% if row[4] == None %}
+                <br>
+                {% else %}
                 <li>{{ row[4] }}</li>
+                {% endif %}
                 {% if check == True %}
                 <a href="{{ url_for('edit_profile') }}" style = "color: #bc7db9;">edit profile</a>
                 {% else %}
